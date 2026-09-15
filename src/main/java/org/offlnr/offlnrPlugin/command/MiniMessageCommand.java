@@ -7,14 +7,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.offlnr.offlnrPlugin.gem.ConfigText;
 
-/**
- * Comando de prueba: previsualiza en el chat un texto con tags de
- * MiniMessage (el mismo formato que usan "nombre"/"lore" en config.yml),
- * sin tener que recompilar el plugin ni tocar ningún archivo. No es un
- * plugin aparte — usa la MiniMessage que ya viene con Paper/Adventure.
- *
- * <p>Ejemplo: {@code /mm <#ff8800><bold>Hola</bold></#ff8800>}</p>
- */
+/** Función de prueba: previsualiza en el chat un texto en formato MiniMessage. */
 public class MiniMessageCommand implements CommandExecutor {
 
     @Override

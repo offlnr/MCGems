@@ -26,16 +26,7 @@ import org.offlnr.offlnrPlugin.gem.GemType;
 
 import java.util.Map;
 
-/**
- * Controla quién puede tocar los bloques de gema.
- *
- * <p>La lentitud del picado (30s) NO se simula acá: la declara la propia
- * Azada de Gemas vía {@code ToolComponent} (ver {@link GemHoeFactory}), así
- * que Minecraft calcula la rotura de forma 100% vanilla y la animación de
- * grietas es la nativa, sin parpadeos. Acá solo hace falta: (1) que ningún
- * otro ítem pueda ni rasguñar el bloque, y (2) reemplazar el drop cuando la
- * azada correcta termina de romperlo de verdad.</p>
- */
+/** Función para controlar quién puede minar los bloques de gema y qué dropean. */
 public class GemMiningListener implements Listener {
 
     private final GemBlockRegistry registry;
@@ -59,8 +50,7 @@ public class GemMiningListener implements Listener {
         if (type == null) {
             return;
         }
-        // El bloque ya se plantó con el material correcto (es el mismo
-        // vidrio teñido); solo hace falta registrarlo como gema minable.
+        // Solo falta registrarlo como gema minable.
         registry.register(event.getBlockPlaced(), type);
     }
 
@@ -74,9 +64,7 @@ public class GemMiningListener implements Listener {
         ItemStack tool = player.getInventory().getItemInMainHand();
         if (!hoeFactory.isGemHoe(tool)) {
             event.setCancelled(true);
-            // Fuerza la grieta de vuelta a "nada" ya mismo, para que no
-            // quede ni un frame de animación visible mientras llega la
-            // corrección del servidor.
+            // Resetea la animación de grieta al instante.
             player.sendBlockDamage(block.getLocation(), 0f);
             player.sendActionBar(Component.text("Solo la Azada de Gemas puede extraer esto.", NamedTextColor.RED));
         }
@@ -90,28 +78,22 @@ public class GemMiningListener implements Listener {
             return;
         }
 
-        // Red de seguridad: no debería llegar hasta acá sin la Azada de
-        // Gemas (se frena antes en onDamage), pero por si otro plugin fuerza
-        // la rotura (ej: block.breakNaturally()) sin pasar por ese evento.
+        // Red de seguridad por si otro plugin fuerza la rotura.
         Player player = event.getPlayer();
         if (!hoeFactory.isGemHoe(player.getInventory().getItemInMainHand())) {
             event.setCancelled(true);
             return;
         }
 
-        // Si llegó hasta acá es porque la rotura la completó la Azada de
-        // Gemas. Se reemplaza el drop de vidrio por la cabeza custom, que
-        // va directo al inventario en vez de tirarse al piso.
+        // Reemplaza el drop de vidrio por la cabeza custom.
         event.setDropItems(false);
         GemLocation location = GemLocation.of(block);
         registry.unregister(block);
-        // Si este bloque pertenecía a una mina y era el último, la mina se
-        // programa para regenerarse sola (ver GemMineManager).
+        // Si era el último bloque de una mina, la programa para regenerarse.
         mineManager.onGemMined(location);
 
         Map<Integer, ItemStack> leftover = player.getInventory().addItem(headFactory.create(type));
-        // Si el inventario está lleno, lo que no entró se tira al piso como
-        // vanilla haría, para no perder el ítem.
+        // Si el inventario está lleno, tira el sobrante al piso.
         for (ItemStack overflow : leftover.values()) {
             player.getWorld().dropItemNaturally(block.getLocation().toCenterLocation(), overflow);
         }
@@ -119,10 +101,6 @@ public class GemMiningListener implements Listener {
         player.getWorld().playSound(block.getLocation(), Sound.BLOCK_AMETHYST_BLOCK_BREAK, 1f, 1f);
         player.getWorld().spawnParticle(Particle.DUST, block.getLocation().toCenterLocation(), 25,
                 0.3, 0.3, 0.3, new Particle.DustOptions(Color.fromRGB(type.color().value()), 1.3f));
-
-        player.sendMessage(Component.text("¡Has extraído una ", NamedTextColor.GREEN)
-                .append(Component.text(type.displayName(), type.color()))
-                .append(Component.text("!", NamedTextColor.GREEN)));
     }
 
     @EventHandler(ignoreCancelled = true)

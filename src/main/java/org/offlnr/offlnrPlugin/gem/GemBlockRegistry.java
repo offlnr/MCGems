@@ -11,11 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 
-/**
- * Registro persistente de qué bloques del mundo son "gemas". Por ahora se
- * llenan únicamente vía comando de admin (/gema colocar), pero queda
- * desacoplado para que más adelante se puedan generar solas en el mundo.
- */
+/** Registro persistente de los bloques de gema del mundo. */
 public class GemBlockRegistry {
 
     private final OfflnrPlugin plugin;
@@ -82,12 +78,7 @@ public class GemBlockRegistry {
         return previous;
     }
 
-    /**
-     * Igual que {@link #register}, pero sin escribir a disco — para altas
-     * masivas (ej: llenar una mina de cientos de bloques), donde guardar
-     * bloque por bloque sería carísimo. El que llama es responsable de
-     * invocar {@link #save()} una sola vez al terminar.
-     */
+    /** Igual que register, pero sin guardar a disco (para altas masivas). */
     public GemType registerWithoutSaving(Block block, GemType type) {
         block.setType(type.blockMaterial());
         return gems.put(GemLocation.of(block), type);
@@ -110,7 +101,7 @@ public class GemBlockRegistry {
         return gems.containsKey(GemLocation.of(block));
     }
 
-    /** Igual que {@link #isGemBlock}, pero sin necesitar un {@link Block} (mundo puede no estar cargado). */
+    /** Igual que isGemBlock, pero sin necesitar el mundo cargado. */
     public boolean isGemLocation(GemLocation location) {
         return gems.containsKey(location);
     }

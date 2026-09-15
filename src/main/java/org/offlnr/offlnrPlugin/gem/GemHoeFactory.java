@@ -15,21 +15,7 @@ import org.offlnr.offlnrPlugin.OfflnrPlugin;
 import java.util.List;
 import java.util.stream.Collectors;
 
-/**
- * Crea y reconoce la Azada de Gemas: durabilidad infinita, brillo de
- * encantamiento sin encantamiento real, y una marca en el PDC que es la
- * única forma válida de identificarla (el nombre/lore no bastan).
- *
- * <p>La lentitud del picado NO se simula a mano: se declara vía
- * {@link ToolComponent}, el mismo sistema que usa vanilla para que un pico
- * de madera tarde más que uno de netherite. Minecraft calcula la velocidad
- * real de rotura como: {@code speed / dureza / 30} daño por tick (cuando la
- * herramienta cuenta como "correcta" para el drop). El vidrio teñido tiene
- * dureza 0.3, así que despejando para que tarde exactamente {@code N}
- * segundos ({@code N * 20} ticks): {@code speed = (0.3 * 30) / (N * 20)}.
- * El tiempo en segundos sale de {@code azada.tiempo-minado-segundos} en
- * config.yml (default: 30).</p>
- */
+/** Genera y reconoce la Azada de Gemas: durabilidad infinita y velocidad de minado configurable. */
 public class GemHoeFactory {
 
     private static final float GLASS_HARDNESS = 0.3f;

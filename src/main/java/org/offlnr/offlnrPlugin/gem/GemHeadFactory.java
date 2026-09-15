@@ -22,20 +22,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.logging.Level;
 
-/**
- * Crea la cabeza custom que dropea cada gema. El nombre, el lore y la
- * textura de cada color salen de config.yml bajo {@code cabezas.<color>}
- * ({@code nombre}, {@code lore}, {@code textura}) — si nombre/lore no están
- * configurados, se usa el nombre temático original de la serie "Zero Gem"
- * de minecraft-heads.com. Cambiar nombre/lore nunca toca la textura.
- *
- * <p>El tamaño de stack y el brillo salen de {@code cabezas-opciones} y
- * aplican por igual a los 7 colores. El brillo se logra con un encantamiento
- * real oculto (no con {@code setEnchantmentGlintOverride}): los Player Heads
- * usan un renderer 3D especial donde ese override a veces no se compone
- * bien, mientras que un encantamiento de verdad siempre se ve en cualquier
- * tipo de ítem.</p>
- */
+/** Genera la cabeza custom que dropea cada gema. */
 public class GemHeadFactory {
 
     private final OfflnrPlugin plugin;
@@ -86,9 +73,7 @@ public class GemHeadFactory {
 
     private void applyTexture(SkullMeta meta, GemType type, String textureUrl) {
         try {
-            // UUID fijo por color (no aleatorio): si cada cabeza tuviera un
-            // UUID de perfil distinto, Minecraft las trataría como ítems
-            // diferentes y nunca se apilarían entre sí aunque se vean igual.
+            // UUID fijo por color, para que las cabezas se puedan apilar entre sí.
             UUID profileId = UUID.nameUUIDFromBytes(("offlnr-gem-" + type.name()).getBytes(StandardCharsets.UTF_8));
             PlayerProfile profile = Bukkit.createProfile(profileId, null);
             PlayerTextures textures = profile.getTextures();

@@ -1,6 +1,9 @@
 package org.offlnr.offlnrPlugin.gem;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Color;
+import org.bukkit.Particle;
+import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -15,15 +18,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Level;
 
-/**
- * Administra las "minas": grupos de gemas creadas de una sola vez que se
- * regeneran automáticamente cuando se agota el último bloque del grupo.
- *
- * <p>No duplica el estado de "minado/sin minar" — la fuente de verdad
- * sigue siendo {@link GemBlockRegistry}. Acá solo se guarda el layout
- * original (qué ubicaciones pertenecen a qué mina) para poder restaurarlo
- * y para saber, cuando se rompe una gema, si esa mina quedó vacía.</p>
- */
+/** Función para administrar las minas: grupos de gemas que se regeneran solas. */
 public class GemMineManager {
 
     private final OfflnrPlugin plugin;
@@ -102,7 +97,7 @@ public class GemMineManager {
         }
     }
 
-    /** Llena la región (bloques ya calculados por el comando) con el color dado y la registra como mina nueva. */
+    /** Llena la región con el color dado y la registra como mina nueva. */
     public GemMine createMine(List<Block> blocks, GemType type) {
         List<GemLocation> locations = new ArrayList<>();
         for (Block block : blocks) {
@@ -132,7 +127,7 @@ public class GemMineManager {
         return mines;
     }
 
-    /** Avisa que se acaba de minar una gema; si esa ubicación pertenece a una mina y era la última, la regenera. */
+    /** Si la gema minada era la última de su mina, programa la regeneración. */
     public void onGemMined(GemLocation location) {
         String mineId = locationToMine.get(location);
         if (mineId == null) {
@@ -151,14 +146,31 @@ public class GemMineManager {
     }
 
     private void regenerate(GemMine mine) {
+        List<Block> restored = new ArrayList<>();
         for (GemLocation location : mine.locations()) {
             Block block = location.toBlock();
             if (block == null) {
                 continue; // el mundo no está cargado; se salta ese bloque
             }
             registry.registerWithoutSaving(block, mine.type());
+            restored.add(block);
         }
         registry.save();
+        playRegenerationEffect(mine, restored);
+    }
+
+    /** Genera partículas y sonido al regenerar la mina. */
+    private void playRegenerationEffect(GemMine mine, List<Block> restored) {
+        if (restored.isEmpty()) {
+            return;
+        }
+        Particle.DustOptions dust = new Particle.DustOptions(Color.fromRGB(mine.type().color().value()), 1.3f);
+        for (Block block : restored) {
+            block.getWorld().spawnParticle(Particle.DUST, block.getLocation().toCenterLocation(), 15,
+                    0.3, 0.3, 0.3, dust);
+        }
+        Block first = restored.get(0);
+        first.getWorld().playSound(first.getLocation(), Sound.BLOCK_BEACON_ACTIVATE, 1f, 1.4f);
     }
 
     private void registerMine(GemMine mine) {

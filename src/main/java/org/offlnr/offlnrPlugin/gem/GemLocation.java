@@ -5,11 +5,7 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 
-/**
- * Posición de un bloque de gema, guardada por coordenadas en vez de por
- * referencia directa a {@link Block}/{@link World} para que sea segura de
- * serializar y de mantener en memoria aunque el mundo se descargue.
- */
+/** Posición de un bloque de gema guardada por coordenadas. */
 public record GemLocation(String world, int x, int y, int z) {
 
     public static GemLocation of(Block block) {

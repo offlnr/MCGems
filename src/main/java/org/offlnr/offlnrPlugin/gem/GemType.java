@@ -5,13 +5,7 @@ import org.bukkit.Material;
 
 import java.util.Locale;
 
-/**
- * Los siete colores de gema soportados. Cada uno mapea a un vidrio teñido
- * vanilla (aspecto "de cristal") que se usa como placeholder visual hasta
- * que el bloque tenga una textura propia, y a la cabeza custom de la serie
- * "Zero Gem" (minecraft-heads.com) que dropea al minarla. La URL de textura
- * de cada cabeza se configura en config.yml (clave {@code cabezas.<color>}).
- */
+/** Los siete colores de gema soportados. */
 public enum GemType {
 
     BLUE("azul", "Gema Azul", Material.BLUE_STAINED_GLASS, TextColor.color(0x55AAFF), "blue",

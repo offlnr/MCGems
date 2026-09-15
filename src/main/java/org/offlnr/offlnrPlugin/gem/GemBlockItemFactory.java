@@ -11,12 +11,7 @@ import org.offlnr.offlnrPlugin.OfflnrPlugin;
 
 import java.util.List;
 
-/**
- * Crea y reconoce el "cristal de gema" como ítem colocable: se planta como
- * un bloque normal y, al tocar el suelo, el listener lo registra solo en el
- * {@link GemBlockRegistry} — no hace falta usar /gema colocar sobre un
- * bloque ya existente.
- */
+/** Función para crear y reconocer el cristal de gema colocable. */
 public class GemBlockItemFactory {
 
     private final NamespacedKey key;
@@ -44,7 +39,7 @@ public class GemBlockItemFactory {
         return item;
     }
 
-    /** Devuelve el color de gema si el ítem es un cristal colocable, o null si es un bloque normal. */
+    /** Devuelve el color de gema del ítem, o null si no es un cristal. */
     public GemType readType(ItemStack item) {
         if (item == null || !item.hasItemMeta()) {
             return null;

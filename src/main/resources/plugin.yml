@@ -8,7 +8,7 @@ load: POSTWORLD
 commands:
   gema:
     description: Administra el sistema de Gemas
-    usage: /<command> <azada|colocar|quitar>
+    usage: /<command> <azada|picota|armadura|cristal|crearmina|minas|borrarmina>
     permission: offlnr.gema
   mm:
     description: Previsualiza un texto en formato MiniMessage
@@ -17,5 +17,5 @@ commands:
 
 permissions:
   offlnr.gema:
-    description: Permite administrar el sistema de gemas (azada, colocar, quitar)
+    description: Permite administrar el sistema de gemas
     default: op

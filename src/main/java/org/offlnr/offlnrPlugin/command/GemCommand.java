@@ -2,7 +2,6 @@ package org.offlnr.offlnrPlugin.command;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.command.Command;
@@ -10,11 +9,12 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
+import org.offlnr.offlnrPlugin.gem.GemArmorFactory;
 import org.offlnr.offlnrPlugin.gem.GemBlockItemFactory;
-import org.offlnr.offlnrPlugin.gem.GemBlockRegistry;
 import org.offlnr.offlnrPlugin.gem.GemHoeFactory;
 import org.offlnr.offlnrPlugin.gem.GemMine;
 import org.offlnr.offlnrPlugin.gem.GemMineManager;
+import org.offlnr.offlnrPlugin.gem.GemPickaxeFactory;
 import org.offlnr.offlnrPlugin.gem.GemType;
 
 import java.util.ArrayList;
@@ -23,29 +23,27 @@ import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
 
-/**
- * Comando de administración: /gema azada | cristal <color> | colocar <color> |
- * quitar | llenar <color> <x1> <y1> <z1> <x2> <y2> <z2> | minas | quitarmina <id>
- * Todo controlado por el permiso "offlnr.gema" (default: op) declarado en plugin.yml.
- */
+/** Función de administración: entrega ítems y gestiona minas vía /gema. */
 public class GemCommand implements CommandExecutor, TabCompleter {
 
     private static final long MAX_FILL_VOLUME = 10_000;
 
     private static final List<String> SUBCOMMANDS =
-            List.of("azada", "cristal", "colocar", "quitar", "llenar", "minas", "quitarmina");
+            List.of("azada", "picota", "armadura", "cristal", "crearmina", "minas", "borrarmina");
     private static final List<String> COLOR_ARG_SUBCOMMANDS =
-            List.of("cristal", "crystal", "colocar", "place", "llenar", "fill");
+            List.of("cristal", "crystal", "crearmina", "createmine");
 
-    private final GemBlockRegistry registry;
     private final GemHoeFactory hoeFactory;
+    private final GemPickaxeFactory pickaxeFactory;
+    private final GemArmorFactory armorFactory;
     private final GemBlockItemFactory blockItemFactory;
     private final GemMineManager mineManager;
 
-    public GemCommand(GemBlockRegistry registry, GemHoeFactory hoeFactory, GemBlockItemFactory blockItemFactory,
-                       GemMineManager mineManager) {
-        this.registry = registry;
+    public GemCommand(GemHoeFactory hoeFactory, GemPickaxeFactory pickaxeFactory, GemArmorFactory armorFactory,
+                       GemBlockItemFactory blockItemFactory, GemMineManager mineManager) {
         this.hoeFactory = hoeFactory;
+        this.pickaxeFactory = pickaxeFactory;
+        this.armorFactory = armorFactory;
         this.blockItemFactory = blockItemFactory;
         this.mineManager = mineManager;
     }
@@ -59,12 +57,12 @@ public class GemCommand implements CommandExecutor, TabCompleter {
 
         switch (args[0].toLowerCase(Locale.ROOT)) {
             case "azada", "hoe" -> giveHoe(sender);
+            case "picota", "pickaxe" -> givePickaxe(sender);
+            case "armadura", "armor" -> giveArmor(sender);
             case "cristal", "crystal" -> giveCrystal(sender, args);
-            case "colocar", "place" -> place(sender, args);
-            case "quitar", "remove" -> remove(sender);
-            case "llenar", "fill" -> fillMine(sender, args);
+            case "crearmina", "createmine" -> createMine(sender, args);
             case "minas", "mines" -> listMines(sender);
-            case "quitarmina", "removemine" -> removeMine(sender, args);
+            case "borrarmina", "deletemine" -> deleteMine(sender, args);
             default -> sendUsage(sender);
         }
         return true;
@@ -77,6 +75,25 @@ public class GemCommand implements CommandExecutor, TabCompleter {
         }
         player.getInventory().addItem(hoeFactory.create());
         player.sendMessage(Component.text("Recibiste la Azada de Gemas.", NamedTextColor.LIGHT_PURPLE));
+    }
+
+    private void givePickaxe(CommandSender sender) {
+        if (!(sender instanceof Player player)) {
+            sender.sendMessage("Solo un jugador puede recibir la picota.");
+            return;
+        }
+        player.getInventory().addItem(pickaxeFactory.create());
+        player.sendMessage(Component.text("Recibiste la Picota Cristalizada.", NamedTextColor.LIGHT_PURPLE));
+    }
+
+    private void giveArmor(CommandSender sender) {
+        if (!(sender instanceof Player player)) {
+            sender.sendMessage("Solo un jugador puede recibir la armadura.");
+            return;
+        }
+        player.getInventory().addItem(armorFactory.createHelmet(), armorFactory.createChestplate(),
+                armorFactory.createLeggings(), armorFactory.createBoots());
+        player.sendMessage(Component.text("Recibiste la Armadura Cristalizada.", NamedTextColor.LIGHT_PURPLE));
     }
 
     private void giveCrystal(CommandSender sender, String[] args) {
@@ -99,57 +116,14 @@ public class GemCommand implements CommandExecutor, TabCompleter {
                 .append(Component.text(". Colocalo como un bloque normal.", NamedTextColor.GREEN)));
     }
 
-    private void place(CommandSender sender, String[] args) {
-        if (!(sender instanceof Player player)) {
-            sender.sendMessage("Solo un jugador puede colocar gemas.");
-            return;
-        }
-        if (args.length < 2) {
-            player.sendMessage(Component.text("Uso: /gema colocar <" + colorList() + ">", NamedTextColor.RED));
-            return;
-        }
-        GemType type = GemType.fromId(args[1]);
-        if (type == null) {
-            player.sendMessage(Component.text("Color inválido. Usa: " + colorList() + ".", NamedTextColor.RED));
-            return;
-        }
-        Block target = player.getTargetBlockExact(6);
-        if (target == null || target.isEmpty()) {
-            player.sendMessage(Component.text("No estás mirando un bloque válido.", NamedTextColor.RED));
-            return;
-        }
-        registry.register(target, type);
-        player.sendMessage(Component.text("Gema colocada: ", NamedTextColor.GREEN)
-                .append(Component.text(type.displayName(), type.color())));
-    }
-
-    private void remove(CommandSender sender) {
-        if (!(sender instanceof Player player)) {
-            sender.sendMessage("Solo un jugador puede quitar gemas.");
-            return;
-        }
-        Block target = player.getTargetBlockExact(6);
-        if (target == null) {
-            player.sendMessage(Component.text("No estás mirando un bloque válido.", NamedTextColor.RED));
-            return;
-        }
-        GemType removed = registry.unregister(target);
-        if (removed == null) {
-            player.sendMessage(Component.text("Ese bloque no es una gema registrada.", NamedTextColor.RED));
-            return;
-        }
-        target.setType(Material.AIR);
-        player.sendMessage(Component.text("Gema eliminada.", NamedTextColor.YELLOW));
-    }
-
-    private void fillMine(CommandSender sender, String[] args) {
+    private void createMine(CommandSender sender, String[] args) {
         if (!(sender instanceof Player player)) {
             sender.sendMessage("Solo un jugador puede crear una mina.");
             return;
         }
         if (args.length < 8) {
             player.sendMessage(Component.text(
-                    "Uso: /gema llenar <" + colorList() + "> <x1> <y1> <z1> <x2> <y2> <z2>", NamedTextColor.RED));
+                    "Uso: /gema crearmina <" + colorList() + "> <x1> <y1> <z1> <x2> <y2> <z2>", NamedTextColor.RED));
             return;
         }
         GemType type = GemType.fromId(args[1]);
@@ -215,9 +189,9 @@ public class GemCommand implements CommandExecutor, TabCompleter {
         }
     }
 
-    private void removeMine(CommandSender sender, String[] args) {
+    private void deleteMine(CommandSender sender, String[] args) {
         if (args.length < 2) {
-            sender.sendMessage(Component.text("Uso: /gema quitarmina <id>", NamedTextColor.RED));
+            sender.sendMessage(Component.text("Uso: /gema borrarmina <id>", NamedTextColor.RED));
             return;
         }
         boolean removed = mineManager.removeMine(args[1]);
@@ -235,12 +209,12 @@ public class GemCommand implements CommandExecutor, TabCompleter {
     private void sendUsage(CommandSender sender) {
         sender.sendMessage(Component.text("Uso:", NamedTextColor.GOLD));
         sender.sendMessage(Component.text("/gema azada - Recibe la Azada de Gemas", NamedTextColor.GRAY));
+        sender.sendMessage(Component.text("/gema picota - Recibe la Picota Cristalizada", NamedTextColor.GRAY));
+        sender.sendMessage(Component.text("/gema armadura - Recibe la Armadura Cristalizada completa", NamedTextColor.GRAY));
         sender.sendMessage(Component.text("/gema cristal <color> - Recibe un cristal colocable de ese color", NamedTextColor.GRAY));
-        sender.sendMessage(Component.text("/gema colocar <color> - Convierte el bloque que miras en gema", NamedTextColor.GRAY));
-        sender.sendMessage(Component.text("/gema quitar - Elimina la gema que miras", NamedTextColor.GRAY));
-        sender.sendMessage(Component.text("/gema llenar <color> <x1> <y1> <z1> <x2> <y2> <z2> - Crea una mina que se regenera sola", NamedTextColor.GRAY));
+        sender.sendMessage(Component.text("/gema crearmina <color> <x1> <y1> <z1> <x2> <y2> <z2> - Crea una mina que se regenera sola", NamedTextColor.GRAY));
         sender.sendMessage(Component.text("/gema minas - Lista las minas creadas", NamedTextColor.GRAY));
-        sender.sendMessage(Component.text("/gema quitarmina <id> - Deja de trackear una mina (no borra los bloques)", NamedTextColor.GRAY));
+        sender.sendMessage(Component.text("/gema borrarmina <id> - Deja de trackear una mina (no borra los bloques)", NamedTextColor.GRAY));
     }
 
     @Override
@@ -259,7 +233,7 @@ public class GemCommand implements CommandExecutor, TabCompleter {
                     .filter(s -> s.startsWith(args[1].toLowerCase(Locale.ROOT)))
                     .collect(Collectors.toList());
         }
-        if (args.length == 2 && (args[0].equalsIgnoreCase("quitarmina") || args[0].equalsIgnoreCase("removemine"))) {
+        if (args.length == 2 && (args[0].equalsIgnoreCase("borrarmina") || args[0].equalsIgnoreCase("deletemine"))) {
             return mineManager.mines().keySet().stream()
                     .filter(id -> id.startsWith(args[1]))
                     .collect(Collectors.toList());
