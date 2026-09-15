@@ -1,0 +1,21 @@
+name: OfflnrPlugin
+version: '${version}'
+
+main: org.offlnr.offlnrPlugin.OfflnrPlugin
+api-version: '26.2'
+load: POSTWORLD
+
+commands:
+  gema:
+    description: Administra el sistema de Gemas
+    usage: /<command> <azada|colocar|quitar>
+    permission: offlnr.gema
+  mm:
+    description: Previsualiza un texto en formato MiniMessage
+    usage: /<command> <texto>
+    permission: offlnr.gema
+
+permissions:
+  offlnr.gema:
+    description: Permite administrar el sistema de gemas (azada, colocar, quitar)
+    default: op

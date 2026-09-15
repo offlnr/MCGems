@@ -1,0 +1,77 @@
+# Configuración del sistema de Gemas.
+#
+# Los campos "nombre" y "lore" soportan el formato MiniMessage de Adventure
+# (ya incluido con Paper, no hace falta ningún plugin extra):
+#   - Colores por nombre:  <red>, <gold>, <light_purple>, <gray>, etc.
+#   - Colores hex/rgb:     <#ff8800>  o  <color:#ff8800>
+#   - Estilos:             <bold>, <italic>, <underlined>, <strikethrough>
+#   - Se pueden combinar y anidar, ej: "<#55aaff><bold>Azada de Gemas</bold></#55aaff>"
+# Por defecto todo el texto sale sin cursiva; si querés cursiva, agregala
+# explícitamente con <italic>.
+
+azada:
+  # Segundos que tarda en romper una gema. Se recalcula sola la velocidad
+  # real de minado (no hace falta tocar nada más).
+  tiempo-minado-segundos: 30
+  nombre: "<gradient:#7843ff:#d5c7fa><shadow:#4800ff><underlined><bold>Azada de Gemas</bold></underlined></shadow></gradient>"
+  lore:
+    - "<gray>Única herramienta capaz de extraer</gray>"
+    - "<gray>gemas cristalizadas.</gray>"
+
+# Minas creadas con /gema llenar.
+minas:
+  # Segundos de espera, luego de agotarse la última gema de una mina, antes
+  # de que se regenere entera de nuevo.
+  regeneracion-segundos: 10
+
+# Se aplican por igual a los 7 colores de cabeza.
+cabezas-opciones:
+  stack-maximo: 64
+  brillo: true
+
+# Una entrada por color de gema. "textura" es la URL de la cabeza (serie
+# "Zero Gem" de minecraft-heads.com); "nombre" y "lore" son lo que se ve en
+# el ítem al dropearse. Cambiar nombre/lore NO afecta la textura.
+cabezas:
+  blue:
+    textura: "http://textures.minecraft.net/texture/150649626c4101352c5995c53b48bff60a938212b7ce902415feb76ea273b35f"
+    nombre: "<gradient:#0000ff:#6c6cff><shadow:#00009c><bold>Gema Azul</bold></shadow></gradient>"
+    lore:
+      - "<gray>Puedes intercambiar items</gray>"
+      - "<gray>especiales con ella</gray>"
+  purple:
+    textura: "http://textures.minecraft.net/texture/c4fc62cf4777abf3565a709852778e248aaae936fd5157c31db2a3c2470a665c"
+    nombre: "<gradient:#9000c4:#d04fff><shadow:#72009c><bold>Gema Morada</bold></shadow></gradient>"
+    lore:
+      - "<gray>Puedes intercambiar items</gray>"
+      - "<gray>especiales con ella</gray>"
+  red:
+    textura: "http://textures.minecraft.net/texture/21dbe30b027acbceb612563bd877cd7ebb719ea6ed1399027dcee58bb9049d4a"
+    nombre: "<gradient:#ff5858:#fa9e9e><shadow:#8c0000><bold>Gema Roja</bold></shadow></gradient>"
+    lore:
+      - "<gray>Puedes intercambiar items</gray>"
+      - "<gray>especiales con ella</gray>"
+  green:
+    textura: "http://textures.minecraft.net/texture/8b1eac429000eb2c418be46ea06acdefed4b7053a00e3e7f11272830068f21"
+    nombre: "<gradient:#00cf00:#60ff60><shadow:#009600><bold>Gema Verde</bold></shadow></gradient>"
+    lore:
+      - "<gray>Puedes intercambiar items</gray>"
+      - "<gray>especiales con ella</gray>"
+  cyan:
+    textura: "http://textures.minecraft.net/texture/edd624fb82a55d400202672b71a49f4abf858a6b01524cca247fad57ee1e30e2"
+    nombre: "<gradient:#01c5e3:#84efff><shadow:#006e80><bold>Gema Celeste</bold></shadow></gradient>"
+    lore:
+      - "<gray>Puedes intercambiar items</gray>"
+      - "<gray>especiales con ella</gray>"
+  yellow:
+    textura: "http://textures.minecraft.net/texture/449a6d330465bc94d573716428dc662cc16acd3b80535b52028c665f4daf682e"
+    nombre: "<gradient:#ffff10:#ffffb5><shadow:#a1a1000><bold>Gema Amarilla</bold></shadow></gradient>"
+    lore:
+      - "<gray>Puedes intercambiar items</gray>"
+      - "<gray>especiales con ella</gray>"
+  orange:
+    textura: "http://textures.minecraft.net/texture/2b8b48aa7410299b10a7ca96bfb2e9da892f228ad4db7bab6bb10fc4c53d4667"
+    nombre: "<gradient:#ff9800:#c4892f><shadow:#6b4000><bold>Gema Naranja</bold></shadow></gradient>"
+    lore:
+      - "<gray>Puedes intercambiar items</gray>"
+      - "<gray>especiales con ella</gray>"
