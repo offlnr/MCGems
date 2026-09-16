@@ -5,19 +5,17 @@ import org.bukkit.Material;
 
 import java.util.Locale;
 
-/** Los siete colores de gema soportados. */
+/** Los seis colores de gema soportados. */
 public enum GemType {
 
-    BLUE("azul", "Gema Azul", Material.BLUE_STAINED_GLASS, TextColor.color(0x55AAFF), "blue",
-            "Zero Gem of Sorrow", "69981"),
+    CELESTE("celeste", "Gema Celeste", Material.LIGHT_BLUE_STAINED_GLASS, TextColor.color(0x55FFFF), "celeste",
+            "Zero Gem of Revelation", "69980"),
     PURPLE("morada", "Gema Morada", Material.PURPLE_STAINED_GLASS, TextColor.color(0xAA00FF), "purple",
             "Zero Gem of Disdain", "69982"),
     RED("roja", "Gema Roja", Material.RED_STAINED_GLASS, TextColor.color(0xFF5555), "red",
             "Zero Gem of Hatred", "69976"),
     GREEN("verde", "Gema Verde", Material.LIME_STAINED_GLASS, TextColor.color(0xA6FF00), "green",
             "Zero Gem of Abhorrence", "69979"),
-    CYAN("cian", "Gema Cian", Material.CYAN_STAINED_GLASS, TextColor.color(0x55FFFF), "cyan",
-            "Zero Gem of Revelation", "69980"),
     YELLOW("amarilla", "Gema Amarilla", Material.YELLOW_STAINED_GLASS, TextColor.color(0xFFFF55), "yellow",
             "Zero Gem of Contenment", "69978"),
     ORANGE("naranja", "Gema Naranja", Material.ORANGE_STAINED_GLASS, TextColor.color(0xFFAA55), "orange",
@@ -42,7 +40,7 @@ public enum GemType {
         this.headId = headId;
     }
 
-    /** Identificador corto usado en comandos (ej: "azul"). */
+    /** Identificador corto usado en comandos (ej: "celeste"). */
     public String id() {
         return id;
     }

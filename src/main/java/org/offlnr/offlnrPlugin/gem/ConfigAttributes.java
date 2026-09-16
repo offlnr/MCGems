@@ -2,6 +2,7 @@ package org.offlnr.offlnrPlugin.gem;
 
 import io.papermc.paper.registry.RegistryAccess;
 import io.papermc.paper.registry.RegistryKey;
+import net.kyori.adventure.text.Component;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Registry;
 import org.bukkit.attribute.Attribute;
@@ -17,7 +18,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-/** Función para aplicar atributos configurables (activos solo con el ítem en la mano) desde config.yml. */
+/** Función para aplicar atributos configurables (activos solo con el ítem en la mano) desde items.yml. */
 public final class ConfigAttributes {
 
     private static final Map<String, String> DISPLAY_NAMES = Map.ofEntries(
@@ -65,7 +66,7 @@ public final class ConfigAttributes {
                     EquipmentSlotGroup.MAINHAND));
 
             String name = DISPLAY_NAMES.getOrDefault(key, key);
-            entries.add(new LoreEntry(name, Roman.toRoman(entry.getInt("nivel", 1))));
+            entries.add(new LoreEntry(Component.text(name), Roman.toRoman(entry.getInt("nivel", 1))));
         }
         return entries;
     }

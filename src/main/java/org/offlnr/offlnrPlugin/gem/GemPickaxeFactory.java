@@ -26,11 +26,11 @@ public class GemPickaxeFactory {
             "<#7d7d7d>de innumerables gemas cristalizadas."
     );
 
-    private final OfflnrPlugin plugin;
+    private final ItemsConfig itemsConfig;
     private final NamespacedKey key;
 
-    public GemPickaxeFactory(OfflnrPlugin plugin) {
-        this.plugin = plugin;
+    public GemPickaxeFactory(OfflnrPlugin plugin, ItemsConfig itemsConfig) {
+        this.itemsConfig = itemsConfig;
         this.key = new NamespacedKey(plugin, "gem_pickaxe");
     }
 
@@ -39,12 +39,12 @@ public class GemPickaxeFactory {
         ItemMeta meta = item.getItemMeta();
 
         Component defaultName = MiniMessage.miniMessage().deserialize(DEFAULT_NAME);
-        meta.displayName(ConfigText.parse(plugin.getConfig().getString("picota.nombre"), defaultName));
+        meta.displayName(ConfigText.parse(itemsConfig.get().getString("picota.nombre"), defaultName));
 
-        List<String> loreLines = plugin.getConfig().getStringList("picota.lore");
+        List<String> loreLines = itemsConfig.get().getStringList("picota.lore");
         List<Component> lore = new ArrayList<>(ConfigText.parseList(loreLines.isEmpty() ? DEFAULT_LORE : loreLines));
         lore.add(Component.empty());
-        lore.addAll(ConfigEnchants.apply(meta, plugin.getConfig().getConfigurationSection("picota.encantamientos")));
+        lore.addAll(ConfigEnchants.apply(meta, itemsConfig.get().getConfigurationSection("picota.encantamientos")));
         meta.lore(lore);
 
         meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);

@@ -22,11 +22,11 @@ public class GemHoeFactory {
     private static final float CORRECT_TOOL_DIVISOR = 30f;
     private static final int DEFAULT_MINING_SECONDS = 30;
 
-    private final OfflnrPlugin plugin;
+    private final ItemsConfig itemsConfig;
     private final NamespacedKey key;
 
-    public GemHoeFactory(OfflnrPlugin plugin) {
-        this.plugin = plugin;
+    public GemHoeFactory(OfflnrPlugin plugin, ItemsConfig itemsConfig) {
+        this.itemsConfig = itemsConfig;
         this.key = new NamespacedKey(plugin, "gem_hoe");
     }
 
@@ -42,8 +42,8 @@ public class GemHoeFactory {
                         .decoration(TextDecoration.ITALIC, false)
         );
 
-        meta.displayName(ConfigText.parse(plugin.getConfig().getString("azada.nombre"), defaultName));
-        List<String> loreLines = plugin.getConfig().getStringList("azada.lore");
+        meta.displayName(ConfigText.parse(itemsConfig.get().getString("azada.nombre"), defaultName));
+        List<String> loreLines = itemsConfig.get().getStringList("azada.lore");
         meta.lore(loreLines.isEmpty() ? defaultLore : ConfigText.parseList(loreLines));
 
         meta.setUnbreakable(true);
@@ -64,7 +64,7 @@ public class GemHoeFactory {
     }
 
     private float miningSpeed() {
-        int seconds = plugin.getConfig().getInt("azada.tiempo-minado-segundos", DEFAULT_MINING_SECONDS);
+        int seconds = itemsConfig.get().getInt("azada.tiempo-minado-segundos", DEFAULT_MINING_SECONDS);
         if (seconds < 1) {
             seconds = 1;
         }

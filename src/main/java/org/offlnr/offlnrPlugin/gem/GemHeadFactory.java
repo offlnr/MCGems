@@ -1,5 +1,7 @@
 package org.offlnr.offlnrPlugin.gem;
 
+import io.papermc.paper.registry.RegistryAccess;
+import io.papermc.paper.registry.RegistryKey;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -56,8 +58,13 @@ public class GemHeadFactory {
         int stackSize = plugin.getConfig().getInt("cabezas-opciones.stack-maximo", 64);
         meta.setMaxStackSize(stackSize);
         if (plugin.getConfig().getBoolean("cabezas-opciones.brillo", true)) {
-            meta.addEnchant(Enchantment.UNBREAKING, 1, true);
-            meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+            Enchantment unbreaking = RegistryAccess.registryAccess()
+                    .getRegistry(RegistryKey.ENCHANTMENT)
+                    .get(NamespacedKey.minecraft("unbreaking"));
+            if (unbreaking != null) {
+                meta.addEnchant(unbreaking, 1, true);
+                meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+            }
         }
 
         meta.getPersistentDataContainer().set(typeKey, PersistentDataType.STRING, type.name());

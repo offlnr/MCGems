@@ -25,11 +25,11 @@ public class GemArmorFactory {
             "<#7d7d7d>de innumerables gemas cristalizadas."
     );
 
-    private final OfflnrPlugin plugin;
+    private final ItemsConfig itemsConfig;
     private final NamespacedKey key;
 
-    public GemArmorFactory(OfflnrPlugin plugin) {
-        this.plugin = plugin;
+    public GemArmorFactory(OfflnrPlugin plugin, ItemsConfig itemsConfig) {
+        this.itemsConfig = itemsConfig;
         this.key = new NamespacedKey(plugin, "gem_armor");
     }
 
@@ -54,12 +54,12 @@ public class GemArmorFactory {
         ItemMeta meta = item.getItemMeta();
 
         Component defaultName = MiniMessage.miniMessage().deserialize(String.format(NAME_TEMPLATE, defaultText));
-        meta.displayName(ConfigText.parse(plugin.getConfig().getString(configKey + ".nombre"), defaultName));
+        meta.displayName(ConfigText.parse(itemsConfig.get().getString(configKey + ".nombre"), defaultName));
 
-        List<String> loreLines = plugin.getConfig().getStringList(configKey + ".lore");
+        List<String> loreLines = itemsConfig.get().getStringList(configKey + ".lore");
         List<Component> lore = new ArrayList<>(ConfigText.parseList(loreLines.isEmpty() ? DEFAULT_LORE : loreLines));
         lore.add(Component.empty());
-        lore.addAll(ConfigEnchants.apply(meta, plugin.getConfig().getConfigurationSection(configKey + ".encantamientos")));
+        lore.addAll(ConfigEnchants.apply(meta, itemsConfig.get().getConfigurationSection(configKey + ".encantamientos")));
         meta.lore(lore);
 
         meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
@@ -76,5 +76,19 @@ public class GemArmorFactory {
         }
         Boolean flag = item.getItemMeta().getPersistentDataContainer().get(key, PersistentDataType.BOOLEAN);
         return Boolean.TRUE.equals(flag);
+    }
+
+    /** Ruta en items.yml de la pieza (ej. "armadura.casco"), o null si no es una pieza reconocida. */
+    public String configPath(ItemStack item) {
+        if (item == null) {
+            return null;
+        }
+        return switch (item.getType()) {
+            case NETHERITE_HELMET -> "armadura.casco";
+            case NETHERITE_CHESTPLATE -> "armadura.pechera";
+            case NETHERITE_LEGGINGS -> "armadura.pantalones";
+            case NETHERITE_BOOTS -> "armadura.botas";
+            default -> null;
+        };
     }
 }

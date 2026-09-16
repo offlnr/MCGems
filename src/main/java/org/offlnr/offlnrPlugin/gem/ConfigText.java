@@ -8,7 +8,7 @@ import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import java.util.List;
 import java.util.stream.Collectors;
 
-/** Función para convertir texto de config.yml a Components con MiniMessage. */
+/** Función para convertir texto de config.yml/items.yml a Components con MiniMessage. */
 public final class ConfigText {
 
     private static final MiniMessage MINI_MESSAGE = MiniMessage.miniMessage();

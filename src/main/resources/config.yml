@@ -1,186 +1,53 @@
-# Configuración del sistema de Gemas.
+# Configuración general del sistema de Gemas. Los ítems (azada, picota,
+# abysmal, armadura y los personalizados) se mudaron a items.yml, editable
+# también desde el juego con /gema editar.
 # "nombre" y "lore" usan formato MiniMessage: colores (<red>, <#ff8800>) y
 # estilos (<bold>, <italic>, <underlined>). Sin cursiva por defecto.
-
-# Función: herramienta especial para extraer gemas.
-azada:
-  # Segundos que tarda en romper una gema.
-  tiempo-minado-segundos: 60
-  nombre: "<#FFFFFF><sprite:'minecraft:items':item/nether_star> <gradient:#FF00C3:#FF9D00><shadow:#9400FF:0.2><underlined><bold>Extractor de gemas</bold></underlined></shadow></gradient> <sprite:'minecraft:items':item/nether_star>"
-  lore:
-    - "<#FF7AEE>Única herramienta capaz de extraer"
-    - "<#FF7AEE>gemas cristalizadas."
-
-# Función: pico entregado con /gema picota. "encantamientos" es libre: se
-# puede agregar, quitar o cambiar el nivel de cualquier encantamiento vanilla
-# (clave en inglés, ej. "efficiency", "fortune") sin límite de nivel.
-picota:
-  nombre: '<#bdbdbd><sprite:"minecraft:particles":gust_7> <gradient:#525251:#bababa><shadow:#303030:0.9><underlined><bold>Picota Cristalizada</bold></underlined></shadow></gradient> <sprite:"minecraft:particles":gust_7>'
-  lore:
-    - "<#FF7AEE>Forjada concentrando la energía"
-    - "<#FF7AEE>de innumerables gemas cristalizadas."
-  encantamientos:
-    efficiency: 10
-    fortune: 5
-    mending: 10
-    unbreaking: 10
-
-# Función: pico entregado con /gema abysmal. Además de encantamientos admite
-# "atributos", que son modificadores reales y solo aplican con el pico en la
-# mano.
-abysmal:
-  nombre: '<#404040><strikethrough><bold>⛏</strikethrough> <gradient:#333333:#808080><shadow:#0a0808:0.6><bold>Abysmal</gradient> <gradient:#333333:#808080><shadow:#0a0808:0.6><bold>Pickaxe</gradient> <#404040><strikethrough><bold>⛏</strikethrough>'
-  # El lore completo del pico: una línea de config por línea del ítem, en
-  # MiniMessage libre (podés escribir lo que quieras, arriba, abajo o entre
-  # medio). Tres tokens especiales, que tienen que ir solos en su línea,
-  # insertan contenido generado en ese punto:
-  #   <encantamientos> - una línea por cada entrada de "encantamientos" de abajo
-  #   <atributos>       - una línea por cada entrada de "atributos" de abajo
-  #   <creador>         - la línea de "creador" de abajo
-  # Si borrás un token, esa sección no aparece. Si sacás toda la lista, se usa
-  # el orden por defecto (encantamientos, atributos, línea vacía, creador).
-  lore:
-    - "<gradient:#333333:#cccccc:#333333>------------------------------</gradient>"
-    - ""
-    - "<encantamientos>"
-    - "<atributos>"
-    - ""
-    - "<gradient:#333333:#cccccc:#333333>------------------------------</gradient>"
-    - "<creador>"
-  # Formato de cada línea que generan "encantamientos" y "atributos". <nombre>
-  # y <nivel> son los placeholders; el color que pongas justo antes de cada
-  # uno es el color de esa parte (podés usar colores distintos para cada una).
-  formato:
-    encantamiento: '<#aaaaaa><sprite:"minecraft:particles":spark_0> <#595959><nombre> <#999999><nivel>'
-    atributo: '<#aaaaaa><sprite:"minecraft:particles":spark_1> <#595959><nombre> <#999999><nivel>'
-  # <jugador> se reemplaza por el nombre de quien usó el comando.
-  creador: '<sprite:"minecraft:particles":spark_4> <#595959>Creado para <#999999><jugador> <#595959>!'
-  encantamientos:
-    efficiency: 10
-    unbreaking: 20
-    fortune: 5
-    mending: 10
-  # "nivel" es solo el número romano del lore; "cantidad" es el valor real.
-  # "operacion": ADD_NUMBER (suma), ADD_SCALAR (% de la base) o MULTIPLY_SCALAR_1.
-  atributos:
-    movement_speed:
-      nivel: 2
-      cantidad: 0.4
-      operacion: ADD_SCALAR
-    knockback_resistance:
-      nivel: 2
-      cantidad: 0.2
-      operacion: ADD_NUMBER
-
-# Función: armadura entregada con /gema armadura. "encantamientos" es libre
-# por pieza: se puede agregar, quitar o cambiar el nivel de cualquier
-# encantamiento vanilla (clave en inglés) sin límite de nivel.
-armadura:
-  casco:
-    nombre: '<#FF00DD><sprite:"minecraft:particles":spark_7> <gradient:#E9FF00:#FF00DD><shadow:#6E056D:0.7><underlined><bold>Casco Cristalizado</bold></underlined></shadow></gradient> <sprite:"minecraft:particles":spark_7>'
-    lore:
-      - "<#FF7AEE>Forjada concentrando la energía"
-      - "<#FF7AEE>de innumerables gemas cristalizadas."
-    encantamientos:
-      protection: 7
-      blast_protection: 7
-      projectile_protection: 7
-      fire_protection: 7
-      respiration: 10
-      aqua_affinity: 10
-      mending: 10
-      unbreaking: 10
-  pechera:
-    nombre: '<#FF00DD><sprite:"minecraft:particles":spark_7> <gradient:#E9FF00:#FF00DD><shadow:#6E056D:0.7><underlined><bold>Pechera Cristalizada</bold></underlined></shadow></gradient> <sprite:"minecraft:particles":spark_7>'
-    lore:
-      - "<#FF7AEE>Forjada concentrando la energía"
-      - "<#FF7AEE>de innumerables gemas cristalizadas."
-    encantamientos:
-      protection: 7
-      blast_protection: 7
-      projectile_protection: 7
-      fire_protection: 7
-      mending: 10
-      unbreaking: 10
-  pantalones:
-    nombre: '<#FF00DD><sprite:"minecraft:particles":spark_7> <gradient:#E9FF00:#FF00DD><shadow:#6E056D:0.7><underlined><bold>Pantalones Cristalizados</bold></underlined></shadow></gradient> <sprite:"minecraft:particles":spark_7>'
-    lore:
-      - "<#FF7AEE>Forjada concentrando la energía"
-      - "<#FF7AEE>de innumerables gemas cristalizadas."
-    encantamientos:
-      protection: 7
-      blast_protection: 7
-      projectile_protection: 7
-      fire_protection: 7
-      swift_sneak: 5
-      mending: 10
-      unbreaking: 10
-  botas:
-    nombre: '<#FF00DD><sprite:"minecraft:particles":spark_7> <gradient:#E9FF00:#FF00DD><shadow:#6E056D:0.7><underlined><bold>Botas Cristalizadas</bold></underlined></shadow></gradient> <sprite:"minecraft:particles":spark_7>'
-    lore:
-      - "<#FF7AEE>Forjada concentrando la energía"
-      - "<#FF7AEE>de innumerables gemas cristalizadas."
-    encantamientos:
-      protection: 7
-      blast_protection: 7
-      projectile_protection: 7
-      fire_protection: 7
-      depth_strider: 7
-      feather_falling: 7
-      soul_speed: 10
-      mending: 10
-      unbreaking: 10
 
 # Función: minas creadas con /gema crearmina.
 minas:
   # Segundos hasta que se regenera una mina agotada.
   regeneracion-segundos: 10
 
-# Función: tamaño de stack y brillo de las 7 cabezas de gema.
+# Función: tamaño de stack y brillo de las 6 cabezas de gema.
 cabezas-opciones:
   stack-maximo: 64
   brillo: true
 
 # Función: nombre, lore y textura de cada cabeza de gema.
 cabezas:
-  blue:
-    textura: "http://textures.minecraft.net/texture/150649626c4101352c5995c53b48bff60a938212b7ce902415feb76ea273b35f"
-    nombre: "<gradient:#0000ff:#6c6cff><shadow:#00009c><bold>Gema Azul</bold></shadow></gradient>"
+  celeste:
+    textura: "http://textures.minecraft.net/texture/d59e3dbfc1d1ea9533011a0e0a4a5f1827fc6becd7f2d8c82b63ba7ecb814901"
+    nombre: "<gradient:#01c5e3:#84efff><shadow:#006e80><bold>Gema Celeste</bold></shadow></gradient>"
     lore:
       - "<#FF7AEE>Puedes intercambiar items"
-      - "<#FF7AEE>especiales con ella."
+      - "<#FF7AEE>especiales con ella"
   purple:
-    textura: "http://textures.minecraft.net/texture/c4fc62cf4777abf3565a709852778e248aaae936fd5157c31db2a3c2470a665c"
+    textura: "http://textures.minecraft.net/texture/c386b448cbe9f1d416dc57f9a30885089815c1f6718a6725b9215430c223ea9f"
     nombre: "<gradient:#9000c4:#d04fff><shadow:#72009c><bold>Gema Morada</bold></shadow></gradient>"
     lore:
       - "<#FF7AEE>Puedes intercambiar items"
       - "<#FF7AEE>especiales con ella"
   red:
-    textura: "http://textures.minecraft.net/texture/21dbe30b027acbceb612563bd877cd7ebb719ea6ed1399027dcee58bb9049d4a"
+    textura: "http://textures.minecraft.net/texture/cef119f08851a72a5f10fbc3247d95e1c006360d2b4f412b23ce054092756b0c"
     nombre: "<gradient:#ff5858:#fa9e9e><shadow:#8c0000><bold>Gema Roja</bold></shadow></gradient>"
     lore:
       - "<#FF7AEE>Puedes intercambiar items"
       - "<#FF7AEE>especiales con ella"
   green:
-    textura: "http://textures.minecraft.net/texture/8b1eac429000eb2c418be46ea06acdefed4b7053a00e3e7f11272830068f21"
+    textura: "http://textures.minecraft.net/texture/9b5871c72987266e15f1be49b1ec334ef6b618e9653fb78e918abd39563dbb93"
     nombre: "<gradient:#00cf00:#60ff60><shadow:#009600><bold>Gema Verde</bold></shadow></gradient>"
     lore:
       - "<#FF7AEE>Puedes intercambiar items"
       - "<#FF7AEE>especiales con ella"
-  cyan:
-    textura: "http://textures.minecraft.net/texture/edd624fb82a55d400202672b71a49f4abf858a6b01524cca247fad57ee1e30e2"
-    nombre: "<gradient:#01c5e3:#84efff><shadow:#006e80><bold>Gema Celeste</bold></shadow></gradient>"
-    lore:
-      - "<#FF7AEE>Puedes intercambiar items"
-      - "<#FF7AEE>especiales con ella"
   yellow:
-    textura: "http://textures.minecraft.net/texture/449a6d330465bc94d573716428dc662cc16acd3b80535b52028c665f4daf682e"
+    textura: "http://textures.minecraft.net/texture/220697d6be1b402c2beb5a4f4d8f39fe68ff5a3c3a2fbf3086327fb863b9dbf6"
     nombre: "<gradient:#ffff10:#ffffb5><shadow:#a1a1000><bold>Gema Amarilla</bold></shadow></gradient>"
     lore:
       - "<#FF7AEE>Puedes intercambiar items"
       - "<#FF7AEE>especiales con ella"
   orange:
-    textura: "http://textures.minecraft.net/texture/2b8b48aa7410299b10a7ca96bfb2e9da892f228ad4db7bab6bb10fc4c53d4667"
+    textura: "http://textures.minecraft.net/texture/2d9a581bff0e101023d1282023b9a499243953f0905548d0dbd5c790661e3b9d"
     nombre: "<gradient:#ff9800:#c4892f><shadow:#6b4000><bold>Gema Naranja</bold></shadow></gradient>"
     lore:
       - "<#FF7AEE>Puedes intercambiar items"

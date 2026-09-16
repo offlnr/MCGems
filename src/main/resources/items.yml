@@ -1,0 +1,227 @@
+# Ítems del plugin (azada, picota, abysmal, armadura y los personalizados que
+# se creen en el juego). "nombre" y "lore" usan formato MiniMessage: colores
+# (<red>, <#ff8800>) y estilos (<bold>, <italic>, <underlined>). Sin cursiva
+# por defecto.
+#
+# Todo esto también se puede editar sin tocar este archivo, desde el juego,
+# con /gema editar (nombre, lore, encantamientos, o crear ítems nuevos desde
+# cero bajo "personalizados"). Los cambios se guardan acá mismo al instante.
+#
+# Claves válidas para "encantamientos" (siempre en inglés, tal cual las usa
+# Minecraft; podés poner cualquier nivel, sin el tope vanilla). El nombre que
+# se ve en el lore no está traducido a mano en el plugin: usa el traductor
+# propio de Minecraft, así que cada jugador lo ve en el idioma de su cliente.
+#   aqua_affinity, bane_of_arthropods, binding_curse, blast_protection,
+#   breach, channeling, density, depth_strider, efficiency, feather_falling,
+#   fire_aspect, fire_protection, flame, fortune, frost_walker, impaling,
+#   infinity, knockback, looting, loyalty, luck_of_the_sea, lure, mending,
+#   multishot, piercing, power, projectile_protection, protection, punch,
+#   quick_charge, respiration, riptide, sharpness, silk_touch, smite,
+#   soul_speed, sweeping_edge, swift_sneak, thorns, unbreaking,
+#   vanishing_curse, wind_burst
+#
+# La picota, la abysmal y cada pieza de armadura tienen un "rayo" (haz de
+# partículas fino, afilado en la punta) cuando el ítem cae al piso. Se controla con:
+#   rayo:
+#     activo: true            # false lo apaga para ese ítem
+#     color: morada            # uno de los colores de gema disponibles:
+#                               # celeste, morada, roja, verde, amarilla, naranja
+
+# Función: herramienta especial para extraer gemas.
+azada:
+  # Segundos que tarda en romper una gema.
+  tiempo-minado-segundos: 60
+  nombre: <#FFFFFF><sprite:'minecraft:items':item/nether_star> <gradient:#FF00C3:#FF9D00><shadow:#9400FF:0.2><underlined><bold>Extractor
+    de gemas</bold></underlined></shadow></gradient> <sprite:'minecraft:items':item/nether_star>
+  lore:
+    - <#FF7AEE>Única herramienta capaz de extraer
+    - <#FF7AEE>gemas cristalizadas.
+
+# Función: pico entregado desde /gema items. "encantamientos" es libre: se
+# puede agregar, quitar o cambiar el nivel de cualquier encantamiento vanilla
+# (clave en inglés, ej. "efficiency", "fortune") sin límite de nivel.
+picota:
+  nombre: <#bdbdbd><sprite:"minecraft:particles":gust_7> <gradient:#525251:#bababa><shadow:#303030:0.9><underlined><bold>Picota
+    Cristalizada</bold></underlined></shadow></gradient> <sprite:"minecraft:particles":gust_7>
+  lore:
+    - <#FF7AEE>Forjada concentrando la energía
+    - <#FF7AEE>de innumerables gemas cristalizadas.
+  encantamientos:
+    efficiency: 10
+    fortune: 5
+    mending: 10
+    unbreaking: 10
+  rayo:
+    activo: true
+    color: morada
+
+# Función: pico entregado desde /gema items. Además de encantamientos admite
+# "atributos", que son modificadores reales y solo aplican con el pico en la
+# mano. Su lore usa una plantilla con tokens, así que /gema editar lore no
+# aplica acá: se edita directo en este archivo (ver comentarios abajo).
+abysmal:
+  nombre: <#404040><strikethrough><bold>⛏</strikethrough> <gradient:#333333:#808080><shadow:#0a0808:0.6><bold><italic>Abysmal</italic></gradient>
+    <gradient:#333333:#808080><shadow:#0a0808:0.6><bold><italic>Pickaxe</italic></gradient>
+    <#404040><strikethrough><bold>⛏</strikethrough>
+  # El lore completo del pico: una línea de config por línea del ítem, en
+  # MiniMessage libre (podés escribir lo que quieras, arriba, abajo o entre
+  # medio). Tres tokens especiales, que tienen que ir solos en su línea,
+  # insertan contenido generado en ese punto:
+  #   <encantamientos> - una línea por cada entrada de "encantamientos" de abajo
+  #   <atributos>       - una línea por cada entrada de "atributos" de abajo
+  #   <creador>         - la línea de "creador" de abajo
+  # Si borrás un token, esa sección no aparece. Si sacás toda la lista, se usa
+  # el orden por defecto (encantamientos, atributos, línea vacía, creador).
+  lore:
+    - <gradient:#333333:#cccccc:#333333>-----------------------</gradient>
+    - <encantamientos>
+    - <atributos>
+    - <gradient:#333333:#cccccc:#333333>-----------------------</gradient>
+    - <creador>
+  # Formato de cada línea que generan "encantamientos" y "atributos". <nombre>
+  # y <nivel> son los placeholders; el color que pongas justo antes de cada
+  # uno es el color de esa parte (podés usar colores distintos para cada una).
+  formato:
+    encantamiento: <#aaaaaa><sprite:"minecraft:particles":spark_0> <#595959><italic><nombre></italic>
+      <#999999><nivel>
+    atributo: <#aaaaaa><sprite:"minecraft:particles":spark_1> <#595959><italic><nombre></italic>
+      <#999999><nivel>
+  # <jugador> se reemplaza por el nombre de quien usó el comando.
+  creador: <sprite:"minecraft:gui":hud/heart/hardcore_full> <#595959>Creado para <#999999><jugador>
+    <#595959>!
+  encantamientos:
+    efficiency: 10
+    unbreaking: 20
+    fortune: 5
+    mending: 10
+  # "nivel" es solo el número romano del lore; "cantidad" es el valor real.
+  # "operacion": ADD_NUMBER (suma), ADD_SCALAR (% de la base) o MULTIPLY_SCALAR_1.
+  atributos:
+    movement_speed:
+      nivel: 2
+      cantidad: 0.4
+      operacion: ADD_SCALAR
+    knockback_resistance:
+      nivel: 2
+      cantidad: 0.2
+      operacion: ADD_NUMBER
+  rayo:
+    activo: true
+    color: morada
+
+# Función: armadura entregada desde /gema items. "encantamientos" es libre
+# por pieza: se puede agregar, quitar o cambiar el nivel de cualquier
+# encantamiento vanilla (clave en inglés) sin límite de nivel.
+armadura:
+  casco:
+    nombre: <#FF00DD><sprite:"minecraft:particles":spark_7> <gradient:#E9FF00:#FF00DD><shadow:#6E056D:0.7><underlined><bold>Casco
+      Cristalizado</bold></underlined></shadow></gradient> <sprite:"minecraft:particles":spark_7>
+    lore:
+      - <#FF7AEE>Forjada concentrando la energía
+      - <#FF7AEE>de innumerables gemas cristalizadas.
+    encantamientos:
+      protection: 7
+      blast_protection: 7
+      projectile_protection: 7
+      fire_protection: 7
+      respiration: 10
+      aqua_affinity: 10
+      mending: 10
+      unbreaking: 10
+    rayo:
+      activo: true
+      color: amarilla
+  pechera:
+    nombre: <#FF00DD><sprite:"minecraft:particles":spark_7> <gradient:#E9FF00:#FF00DD><shadow:#6E056D:0.7><underlined><bold>Pechera
+      Cristalizada</bold></underlined></shadow></gradient> <sprite:"minecraft:particles":spark_7>
+    lore:
+      - <#FF7AEE>Forjada concentrando la energía
+      - <#FF7AEE>de innumerables gemas cristalizadas.
+    encantamientos:
+      protection: 7
+      blast_protection: 7
+      projectile_protection: 7
+      fire_protection: 7
+      mending: 10
+      unbreaking: 10
+    rayo:
+      activo: true
+      color: amarilla
+  pantalones:
+    nombre: <#FF00DD><sprite:"minecraft:particles":spark_7> <gradient:#E9FF00:#FF00DD><shadow:#6E056D:0.7><underlined><bold>Pantalones
+      Cristalizados</bold></underlined></shadow></gradient> <sprite:"minecraft:particles":spark_7>
+    lore:
+      - <#FF7AEE>Forjada concentrando la energía
+      - <#FF7AEE>de innumerables gemas cristalizadas.
+    encantamientos:
+      protection: 7
+      blast_protection: 7
+      projectile_protection: 7
+      fire_protection: 7
+      swift_sneak: 5
+      mending: 10
+      unbreaking: 10
+    rayo:
+      activo: true
+      color: amarilla
+  botas:
+    nombre: <#FF00DD><sprite:"minecraft:particles":spark_7> <gradient:#E9FF00:#FF00DD><shadow:#6E056D:0.7><underlined><bold>Botas
+      Cristalizadas</bold></underlined></shadow></gradient> <sprite:"minecraft:particles":spark_7>
+    lore:
+      - <#FF7AEE>Forjada concentrando la energía
+      - <#FF7AEE>de innumerables gemas cristalizadas.
+    encantamientos:
+      protection: 7
+      blast_protection: 7
+      projectile_protection: 7
+      fire_protection: 7
+      depth_strider: 7
+      feather_falling: 7
+      soul_speed: 10
+      mending: 10
+      unbreaking: 10
+    rayo:
+      activo: true
+      color: amarilla
+personalizados:
+  butterflywings:
+    material: ELYTRA
+    nombre: <#ffff00>★ <gradient:#FF9999:#FFFF99:#99FF99:#99FFFF:#9999FF:#FF99FF><bold>ButterFly
+      Wings</bold></gradient><#ffff00> ★
+    lore:
+      - <rainbow>❃ ⁎ ❃ ⁎ ❃ ⁎ ❃ ⁎ ❃ ⁎ ❃ ⁎ ❃ ⁎ ❃
+      - <encantamientos>
+      - <atributos>
+      - ''
+      - <creador>
+      - <rainbow>❃ ⁎ ❃ ⁎ ❃ ⁎ ❃ ⁎ ❃ ⁎ ❃ ⁎ ❃ ⁎ ❃
+
+    formato:
+      encantamiento: <#ff80df>♡<#ff99ff><italic> <nombre></italic> <#ffffff><nivel>
+      atributo: <#ff80df>♡<#595959> <nombre> <#999999><nivel>
+    # <jugador> se reemplaza por el nombre de quien usó el comando.
+    creador: <yellow>> <#ffffff>Creado para <#ffb3ec><jugador><#595959>!
+
+    encantamientos:
+      protection: 5
+      mending: 1
+      unbreaking: 3
+
+# Ítems creados desde el juego con /gema editar crear [id] (con el ítem en la
+# mano). Cada uno admite nombre, lore y encantamientos igual que los de
+# arriba, y además arranca con "atributos", "formato" y "creador" ya armados
+# (vacíos), para que se vea de una toda la estructura editable sin tener que
+# recordarla. Esto es solo un ejemplo comentado del formato que arma el comando:
+# personalizados:
+#   ejemplo:
+#     material: DIAMOND_SWORD
+#     nombre: "<gold>Espada de ejemplo"
+#     lore:
+#       - "<gray>Creada desde /gema editar"
+#     encantamientos:
+#       sharpness: 10
+#     atributos: {}
+#     formato:
+#       encantamiento: ""
+#       atributo: ""
+#     creador: ""

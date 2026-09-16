@@ -5,6 +5,7 @@ import io.papermc.paper.registry.RegistryKey;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.translation.Translatable;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Registry;
 import org.bukkit.configuration.ConfigurationSection;
@@ -14,41 +15,34 @@ import org.offlnr.offlnrPlugin.util.Roman;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
-/** Función para aplicar encantamientos configurables (clave: nivel, sin límite) desde config.yml. */
+/**
+ * Función para aplicar encantamientos configurables (clave: nivel, sin límite) desde items.yml.
+ * El nombre mostrado en el lore es un Component traducible ({@link Component#translatable}), así
+ * que cada jugador lo ve en el idioma configurado en su propio cliente, sin depender de una
+ * traducción fija en el plugin.
+ */
 public final class ConfigEnchants {
 
-    private static final Map<String, String> DISPLAY_NAMES = Map.ofEntries(
-            Map.entry("efficiency", "Eficiencia"),
-            Map.entry("fortune", "Fortuna"),
-            Map.entry("unbreaking", "Irrompibilidad"),
-            Map.entry("mending", "Reparación"),
-            Map.entry("protection", "Protección"),
-            Map.entry("blast_protection", "Protección contra explosiones"),
-            Map.entry("projectile_protection", "Protección contra proyectiles"),
-            Map.entry("fire_protection", "Protección contra el fuego"),
-            Map.entry("respiration", "Respiración"),
-            Map.entry("aqua_affinity", "Afinidad Acuática"),
-            Map.entry("swift_sneak", "Sigilo Rápido"),
-            Map.entry("depth_strider", "Agilidad Acuática"),
-            Map.entry("feather_falling", "Caída de plumas"),
-            Map.entry("soul_speed", "Velocidad de almas"),
-            Map.entry("sharpness", "Filo"),
-            Map.entry("looting", "Botín"),
-            Map.entry("knockback", "Empuje"),
-            Map.entry("fire_aspect", "Aspecto ígneo")
-    );
-
     private ConfigEnchants() {
+    }
+
+    /** Indica si la clave corresponde a un encantamiento vanilla real, para validar antes de guardar. */
+    public static boolean isValidKey(String key) {
+        Registry<Enchantment> registry = RegistryAccess.registryAccess().getRegistry(RegistryKey.ENCHANTMENT);
+        return registry.get(NamespacedKey.minecraft(key)) != null;
     }
 
     /** Aplica cada "clave: nivel" de la sección al ítem (ignorando el tope vanilla) y devuelve el lore correspondiente en gris. */
     public static List<Component> apply(ItemMeta meta, ConfigurationSection section) {
         List<Component> lore = new ArrayList<>();
         for (LoreEntry entry : collect(meta, section)) {
-            lore.add(Component.text(entry.name() + " " + entry.level(), NamedTextColor.GRAY)
-                    .decoration(TextDecoration.ITALIC, false));
+            lore.add(Component.text()
+                    .append(entry.name())
+                    .append(Component.text(" " + entry.level()))
+                    .color(NamedTextColor.GRAY)
+                    .decoration(TextDecoration.ITALIC, false)
+                    .build());
         }
         return lore;
     }
@@ -67,7 +61,8 @@ public final class ConfigEnchants {
             }
             int level = section.getInt(key);
             meta.addEnchant(enchantment, level, true);
-            String name = DISPLAY_NAMES.getOrDefault(key, key);
+            // Se castea a la interfaz de Adventure (no la de Bukkit, deprecada) para el mismo método.
+            Component name = Component.translatable(((Translatable) enchantment).translationKey());
             entries.add(new LoreEntry(name, Roman.toRoman(level)));
         }
         return entries;
