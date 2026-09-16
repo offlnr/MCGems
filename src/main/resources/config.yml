@@ -25,6 +25,53 @@ picota:
     mending: 10
     unbreaking: 10
 
+# Función: pico entregado con /gema abysmal. Además de encantamientos admite
+# "atributos", que son modificadores reales y solo aplican con el pico en la
+# mano.
+abysmal:
+  nombre: '<#404040><strikethrough><bold>⛏</strikethrough> <gradient:#333333:#808080><shadow:#0a0808:0.6><bold>Abysmal</gradient> <gradient:#333333:#808080><shadow:#0a0808:0.6><bold>Pickaxe</gradient> <#404040><strikethrough><bold>⛏</strikethrough>'
+  # El lore completo del pico: una línea de config por línea del ítem, en
+  # MiniMessage libre (podés escribir lo que quieras, arriba, abajo o entre
+  # medio). Tres tokens especiales, que tienen que ir solos en su línea,
+  # insertan contenido generado en ese punto:
+  #   <encantamientos> - una línea por cada entrada de "encantamientos" de abajo
+  #   <atributos>       - una línea por cada entrada de "atributos" de abajo
+  #   <creador>         - la línea de "creador" de abajo
+  # Si borrás un token, esa sección no aparece. Si sacás toda la lista, se usa
+  # el orden por defecto (encantamientos, atributos, línea vacía, creador).
+  lore:
+    - "<gradient:#333333:#cccccc:#333333>------------------------------</gradient>"
+    - ""
+    - "<encantamientos>"
+    - "<atributos>"
+    - ""
+    - "<gradient:#333333:#cccccc:#333333>------------------------------</gradient>"
+    - "<creador>"
+  # Formato de cada línea que generan "encantamientos" y "atributos". <nombre>
+  # y <nivel> son los placeholders; el color que pongas justo antes de cada
+  # uno es el color de esa parte (podés usar colores distintos para cada una).
+  formato:
+    encantamiento: '<#aaaaaa><sprite:"minecraft:particles":spark_0> <#595959><nombre> <#999999><nivel>'
+    atributo: '<#aaaaaa><sprite:"minecraft:particles":spark_1> <#595959><nombre> <#999999><nivel>'
+  # <jugador> se reemplaza por el nombre de quien usó el comando.
+  creador: '<sprite:"minecraft:particles":spark_4> <#595959>Creado para <#999999><jugador> <#595959>!'
+  encantamientos:
+    efficiency: 10
+    unbreaking: 20
+    fortune: 5
+    mending: 10
+  # "nivel" es solo el número romano del lore; "cantidad" es el valor real.
+  # "operacion": ADD_NUMBER (suma), ADD_SCALAR (% de la base) o MULTIPLY_SCALAR_1.
+  atributos:
+    movement_speed:
+      nivel: 2
+      cantidad: 0.4
+      operacion: ADD_SCALAR
+    knockback_resistance:
+      nivel: 2
+      cantidad: 0.2
+      operacion: ADD_NUMBER
+
 # Función: armadura entregada con /gema armadura. "encantamientos" es libre
 # por pieza: se puede agregar, quitar o cambiar el nivel de cualquier
 # encantamiento vanilla (clave en inglés) sin límite de nivel.

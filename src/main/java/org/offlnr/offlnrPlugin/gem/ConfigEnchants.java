@@ -43,11 +43,21 @@ public final class ConfigEnchants {
     private ConfigEnchants() {
     }
 
-    /** Aplica cada "clave: nivel" de la sección al ítem (ignorando el tope vanilla) y devuelve el lore correspondiente. */
+    /** Aplica cada "clave: nivel" de la sección al ítem (ignorando el tope vanilla) y devuelve el lore correspondiente en gris. */
     public static List<Component> apply(ItemMeta meta, ConfigurationSection section) {
         List<Component> lore = new ArrayList<>();
+        for (LoreEntry entry : collect(meta, section)) {
+            lore.add(Component.text(entry.name() + " " + entry.level(), NamedTextColor.GRAY)
+                    .decoration(TextDecoration.ITALIC, false));
+        }
+        return lore;
+    }
+
+    /** Aplica cada "clave: nivel" de la sección al ítem (ignorando el tope vanilla) y devuelve los datos crudos, sin formatear. */
+    public static List<LoreEntry> collect(ItemMeta meta, ConfigurationSection section) {
+        List<LoreEntry> entries = new ArrayList<>();
         if (section == null) {
-            return lore;
+            return entries;
         }
         Registry<Enchantment> registry = RegistryAccess.registryAccess().getRegistry(RegistryKey.ENCHANTMENT);
         for (String key : section.getKeys(false)) {
@@ -58,9 +68,8 @@ public final class ConfigEnchants {
             int level = section.getInt(key);
             meta.addEnchant(enchantment, level, true);
             String name = DISPLAY_NAMES.getOrDefault(key, key);
-            lore.add(Component.text(name + " " + Roman.toRoman(level), NamedTextColor.GRAY)
-                    .decoration(TextDecoration.ITALIC, false));
+            entries.add(new LoreEntry(name, Roman.toRoman(level)));
         }
-        return lore;
+        return entries;
     }
 }

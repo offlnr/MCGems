@@ -9,6 +9,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
+import org.offlnr.offlnrPlugin.gem.AbysmalPickaxeFactory;
 import org.offlnr.offlnrPlugin.gem.GemArmorFactory;
 import org.offlnr.offlnrPlugin.gem.GemBlockItemFactory;
 import org.offlnr.offlnrPlugin.gem.GemHoeFactory;
@@ -29,20 +30,22 @@ public class GemCommand implements CommandExecutor, TabCompleter {
     private static final long MAX_FILL_VOLUME = 10_000;
 
     private static final List<String> SUBCOMMANDS =
-            List.of("azada", "picota", "armadura", "cristal", "crearmina", "minas", "borrarmina");
+            List.of("azada", "picota", "abysmal", "armadura", "cristal", "crearmina", "minas", "borrarmina");
     private static final List<String> COLOR_ARG_SUBCOMMANDS =
             List.of("cristal", "crystal", "crearmina", "createmine");
 
     private final GemHoeFactory hoeFactory;
     private final GemPickaxeFactory pickaxeFactory;
+    private final AbysmalPickaxeFactory abysmalFactory;
     private final GemArmorFactory armorFactory;
     private final GemBlockItemFactory blockItemFactory;
     private final GemMineManager mineManager;
 
-    public GemCommand(GemHoeFactory hoeFactory, GemPickaxeFactory pickaxeFactory, GemArmorFactory armorFactory,
-                       GemBlockItemFactory blockItemFactory, GemMineManager mineManager) {
+    public GemCommand(GemHoeFactory hoeFactory, GemPickaxeFactory pickaxeFactory, AbysmalPickaxeFactory abysmalFactory,
+                       GemArmorFactory armorFactory, GemBlockItemFactory blockItemFactory, GemMineManager mineManager) {
         this.hoeFactory = hoeFactory;
         this.pickaxeFactory = pickaxeFactory;
+        this.abysmalFactory = abysmalFactory;
         this.armorFactory = armorFactory;
         this.blockItemFactory = blockItemFactory;
         this.mineManager = mineManager;
@@ -58,6 +61,7 @@ public class GemCommand implements CommandExecutor, TabCompleter {
         switch (args[0].toLowerCase(Locale.ROOT)) {
             case "azada", "hoe" -> giveHoe(sender);
             case "picota", "pickaxe" -> givePickaxe(sender);
+            case "abysmal" -> giveAbysmalPickaxe(sender);
             case "armadura", "armor" -> giveArmor(sender);
             case "cristal", "crystal" -> giveCrystal(sender, args);
             case "crearmina", "createmine" -> createMine(sender, args);
@@ -84,6 +88,15 @@ public class GemCommand implements CommandExecutor, TabCompleter {
         }
         player.getInventory().addItem(pickaxeFactory.create());
         player.sendMessage(Component.text("Recibiste la Picota Cristalizada.", NamedTextColor.LIGHT_PURPLE));
+    }
+
+    private void giveAbysmalPickaxe(CommandSender sender) {
+        if (!(sender instanceof Player player)) {
+            sender.sendMessage("Solo un jugador puede recibir la Abysmal Pickaxe.");
+            return;
+        }
+        player.getInventory().addItem(abysmalFactory.create(player));
+        player.sendMessage(Component.text("Recibiste la Abysmal Pickaxe.", NamedTextColor.LIGHT_PURPLE));
     }
 
     private void giveArmor(CommandSender sender) {
@@ -210,6 +223,7 @@ public class GemCommand implements CommandExecutor, TabCompleter {
         sender.sendMessage(Component.text("Uso:", NamedTextColor.GOLD));
         sender.sendMessage(Component.text("/gema azada - Recibe la Azada de Gemas", NamedTextColor.GRAY));
         sender.sendMessage(Component.text("/gema picota - Recibe la Picota Cristalizada", NamedTextColor.GRAY));
+        sender.sendMessage(Component.text("/gema abysmal - Recibe la Abysmal Pickaxe a tu nombre", NamedTextColor.GRAY));
         sender.sendMessage(Component.text("/gema armadura - Recibe la Armadura Cristalizada completa", NamedTextColor.GRAY));
         sender.sendMessage(Component.text("/gema cristal <color> - Recibe un cristal colocable de ese color", NamedTextColor.GRAY));
         sender.sendMessage(Component.text("/gema crearmina <color> <x1> <y1> <z1> <x2> <y2> <z2> - Crea una mina que se regenera sola", NamedTextColor.GRAY));

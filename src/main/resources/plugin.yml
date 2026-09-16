@@ -8,7 +8,7 @@ load: POSTWORLD
 commands:
   gema:
     description: Administra el sistema de Gemas
-    usage: /<command> <azada|picota|armadura|cristal|crearmina|minas|borrarmina>
+    usage: /<command> <azada|picota|abysmal|armadura|cristal|crearmina|minas|borrarmina>
     permission: offlnr.gema
   mm:
     description: Previsualiza un texto en formato MiniMessage

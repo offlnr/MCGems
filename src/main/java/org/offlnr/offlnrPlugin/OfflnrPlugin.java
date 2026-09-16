@@ -3,6 +3,7 @@ package org.offlnr.offlnrPlugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.offlnr.offlnrPlugin.command.GemCommand;
 import org.offlnr.offlnrPlugin.command.MiniMessageCommand;
+import org.offlnr.offlnrPlugin.gem.AbysmalPickaxeFactory;
 import org.offlnr.offlnrPlugin.gem.GemArmorFactory;
 import org.offlnr.offlnrPlugin.gem.GemBlockItemFactory;
 import org.offlnr.offlnrPlugin.gem.GemBlockRegistry;
@@ -30,6 +31,7 @@ public final class OfflnrPlugin extends JavaPlugin {
 
         GemHoeFactory hoeFactory = new GemHoeFactory(this);
         GemPickaxeFactory pickaxeFactory = new GemPickaxeFactory(this);
+        AbysmalPickaxeFactory abysmalFactory = new AbysmalPickaxeFactory(this);
         GemArmorFactory armorFactory = new GemArmorFactory(this);
         GemHeadFactory headFactory = new GemHeadFactory(this);
         GemBlockItemFactory blockItemFactory = new GemBlockItemFactory(this);
@@ -38,7 +40,8 @@ public final class OfflnrPlugin extends JavaPlugin {
                 new GemMiningListener(gemRegistry, hoeFactory, headFactory, blockItemFactory, mineManager), this);
         getServer().getPluginManager().registerEvents(new GemItemBeamListener(this, pickaxeFactory, armorFactory), this);
 
-        GemCommand gemCommand = new GemCommand(hoeFactory, pickaxeFactory, armorFactory, blockItemFactory, mineManager);
+        GemCommand gemCommand = new GemCommand(hoeFactory, pickaxeFactory, abysmalFactory, armorFactory,
+                blockItemFactory, mineManager);
         getCommand("gema").setExecutor(gemCommand);
         getCommand("gema").setTabCompleter(gemCommand);
         getCommand("mm").setExecutor(new MiniMessageCommand());
